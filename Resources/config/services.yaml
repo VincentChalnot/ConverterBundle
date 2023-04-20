@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Sidus\ConverterBundle\:
+        resource: '../../'
+        exclude: '../../{Debug,DependencyInjection,Entity,Model}'
+
+    Sidus\ConverterBundle\ConverterInterface:
+        alias: Sidus\ConverterBundle\Converter
+
+    Sidus\ConverterBundle\Transformer\:
+        resource: '../../Transformer'
+        tags:
+            - { name: cleverage.transformer }

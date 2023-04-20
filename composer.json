@@ -1,0 +1,40 @@
+{
+    "name": "sidus/converter-bundle",
+    "description": "Alternative to Symfony/Serializer to convert complex data types using Yaml configuration.",
+    "keywords": [
+        "convert",
+        "converter",
+        "mapping",
+        "serialize",
+        "serializer",
+        "dto",
+        "data transfer object"
+    ],
+    "homepage": "https://github.com/VincentChalnot/ConverterBundle",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vincent Chalnot",
+            "email": "vincent@sidus.fr",
+            "homepage": "https://sidus.fr",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sidus\\ConverterBundle\\": ""
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "symfony/dependency-injection": ">=5.3",
+        "symfony/config": ">=5.3",
+        "symfony/http-kernel": ">=5.3",
+        "symfony/event-dispatcher": ">=5.3",
+        "cleverage/process-bundle": ">=3.2",
+        "symfony/property-access": ">=5.3",
+        "psr/log": ">=2.0",
+        "symfony/options-resolver": ">=5.3"
+    }
+}
