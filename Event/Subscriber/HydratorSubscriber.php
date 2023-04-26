@@ -40,28 +40,26 @@ class HydratorSubscriber implements EventSubscriberInterface
         }
 
         $reflectionClass = $event->getOutputReflectionClass();
-        $properties = $event->getProperties();
         $output = $event->getOutput();
         if (!$output) {
             $output = $reflectionClass->newInstanceWithoutConstructor();
         }
 
-        foreach ($properties as $propertyName => $value) {
+        foreach ($event->getProperties() as $propertyName => $value) {
             if (!$reflectionClass->hasProperty($propertyName)) {
                 continue;
             }
             $reflectionProperty = $reflectionClass->getProperty($propertyName);
             $reflectionProperty->getDeclaringClass()->getProperty($propertyName)->setValue($output, $value);
-            unset($properties[$propertyName]);
+            $event->removeProperty($propertyName);
         }
 
-        if (!empty($properties)) {
+        if (!empty($event->getProperties())) {
             $m = "Some properties were not set by hydration in object of type '{$reflectionClass->getName()}': ";
-            $m .= implode(', ', array_keys($properties));
+            $m .= implode(', ', array_keys($event->getProperties()));
             $this->logger->info($m);
         }
 
-        $event->setProperties($properties);
         $event->setOutput($output);
     }
 }

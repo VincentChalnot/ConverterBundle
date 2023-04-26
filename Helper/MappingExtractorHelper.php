@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle\Helper;
 
-use Sidus\ConverterBundle\Event\ConverterEvent;
-use Sidus\ConverterBundle\Model\ConverterConfiguration;
+use Sidus\ConverterBundle\Event\EventInterface;
+use Sidus\ConverterBundle\Model\ConfigurationInterface;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 class MappingExtractorHelper
 {
     public function applyMapping(
-        ConverterEvent $event,
-        ConverterConfiguration $config,
+        EventInterface $event,
+        ConfigurationInterface $config,
         Mapping $mapping,
-        mixed $input,
     ): void {
+        $input = $event->getInput();
         if (null === $input) {
             throw new \LogicException("Input cannot be null");
         }

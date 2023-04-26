@@ -23,14 +23,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class AutoMappingExtractorSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly MappingExtractorHelper $mappingExtractorHelper,
+        protected readonly MappingExtractorHelper $mappingExtractorHelper,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            ConverterEvent::class => ['convert', 1100],
+            ConverterEvent::class => ['convert', 900],
         ];
     }
 
@@ -41,18 +41,16 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $input = $event->getInput();
-        $outputRefl = new \ReflectionClass($config->getOutputType());
+        $outputRefl = $event->getOutputReflectionClass();
         foreach ($outputRefl->getProperties() as $property) {
-            if ($config->getMapping()->offsetExists($property->getName())) {
+            if ($event->hasProperty($property->getName())) {
                 continue;
             }
             $mapping = new Mapping(
                 outputProperty: $property->getName(),
                 ignoreMissing: true,
             );
-            $this->mappingExtractorHelper->applyMapping($event, $config, $mapping, $input);
+            $this->mappingExtractorHelper->applyMapping($event, $config, $mapping);
         }
     }
-
 }

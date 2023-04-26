@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Check remaining extracted properties and throw an exception if not empty.
  */
-class CheckMissingPropertiesSubscriber implements EventSubscriberInterface
+class CheckRemainingPropertiesSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {

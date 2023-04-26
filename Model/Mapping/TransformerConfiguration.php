@@ -14,6 +14,8 @@ namespace Sidus\ConverterBundle\Model\Mapping;
 
 use CleverAge\ProcessBundle\Transformer\ConfigurableTransformerInterface;
 use CleverAge\ProcessBundle\Transformer\TransformerInterface;
+use Sidus\ConverterBundle\Event\EventInterface;
+use Sidus\ConverterBundle\Transformer\ConverterTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -29,8 +31,12 @@ class TransformerConfiguration
     ) {
     }
 
-    public function transform(mixed $value): mixed
+    public function transform(EventInterface $event, Mapping $mapping, mixed $value): mixed
     {
+        if ($this->transformer instanceof ConverterTransformer) {
+            return $this->transformer->transformWithParent($event, $mapping, $value, $this->getOptions());
+        }
+
         return $this->transformer->transform($value, $this->getOptions());
     }
 

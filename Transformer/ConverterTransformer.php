@@ -16,7 +16,9 @@ use CleverAge\ProcessBundle\Transformer\ConfigurableTransformerInterface;
 use Sidus\ConverterBundle\Configuration\ConfigurationBuilder;
 use Sidus\ConverterBundle\ConverterInterface;
 use Sidus\ConverterBundle\DependencyInjection\Configuration;
+use Sidus\ConverterBundle\Event\EventInterface;
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
+use Sidus\ConverterBundle\Model\Mapping\Mapping;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -40,7 +42,7 @@ class ConverterTransformer implements ConfigurableTransformerInterface
         $resolver->setAllowedTypes('configuration', ['string', 'array', ConverterConfiguration::class]);
         $resolver->setNormalizer(
             'configuration',
-            function (Options $options, string | array | ConverterConfiguration $value) {
+            function (Options $options, string|array|ConverterConfiguration $value) {
                 if (is_string($value) || $value instanceof ConverterConfiguration) {
                     return $value;
                 }
@@ -56,6 +58,15 @@ class ConverterTransformer implements ConfigurableTransformerInterface
     public function transform(mixed $value, array $options = []): mixed
     {
         return $this->converter->convert($value, $options['configuration']);
+    }
+
+    public function transformWithParent(
+        EventInterface $parentEvent,
+        Mapping $parentMapping,
+        mixed $value,
+        array $options = []
+    ): mixed {
+        return $this->converter->convertWithParent($parentEvent, $parentMapping, $value, $options['configuration']);
     }
 
     public function getCode(): string

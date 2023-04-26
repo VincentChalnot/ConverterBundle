@@ -79,4 +79,11 @@ abstract class AbstractImmutableCollection implements CollectionInterface
     {
         $this->collection->seek($offset);
     }
+
+    public function __debugInfo(): ?array
+    {
+        return [
+            "\0*\0collection" => iterator_to_array($this->collection),
+        ];
+    }
 }

@@ -33,7 +33,6 @@ class OutputCreatorSubscriber implements EventSubscriberInterface
             return;
         }
         $config = $event->getConfiguration();
-        $properties = $event->getProperties();
 
         if ('array' === $config->getOutputType()) {
             $event->setOutput([]);
@@ -51,14 +50,13 @@ class OutputCreatorSubscriber implements EventSubscriberInterface
         if ($refl->hasMethod('__construct')) {
             $constructor = $refl->getMethod('__construct');
             foreach ($constructor->getParameters() as $parameter) {
-                if (!array_key_exists($parameter->getName(), $properties)) {
+                if (!$event->hasProperty($parameter->getName())) {
                     $args[$parameter->getPosition()] = null;
                     continue;
                 }
-                $args[$parameter->getPosition()] = $properties[$parameter->getName()];
-                unset($properties[$parameter->getName()]);
+                $args[$parameter->getPosition()] = $event->getProperty($parameter->getName());
+                $event->removeProperty($parameter->getName());
             }
-            $event->setProperties($properties);
         }
 
         $event->setOutput($refl->newInstanceArgs($args));

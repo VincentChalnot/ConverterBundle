@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace Sidus\ConverterBundle\Event\Subscriber;
 
 use Sidus\ConverterBundle\ConverterInterface;
+use Sidus\ConverterBundle\Event\BehaviorEvent;
 use Sidus\ConverterBundle\Event\ConverterEvent;
+use Sidus\ConverterBundle\Event\EventInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -30,32 +32,30 @@ class TransformerSubscriber implements EventSubscriberInterface
     {
         return [
             ConverterEvent::class => ['convert', 900],
+            BehaviorEvent::class => ['convert', 900],
         ];
     }
 
-    public function convert(ConverterEvent $event): void
+    public function convert(EventInterface $event): void
     {
         $config = $event->getConfiguration();
-        $properties = $event->getProperties();
 
         foreach ($config->getMapping() as $mapping) {
             $propertyName = $mapping->getOutputProperty();
-            $value = $properties[$propertyName];
+            $value = $event->getProperty($propertyName);
 
             // First, transformers
             $transformerConfigs = $mapping->getTransformerConfigurations();
             if (null !== $transformerConfigs) {
-                if (!array_key_exists($propertyName, $properties)) {
-                    continue; // Missing property, don't care its handles by another event
+                if (!$event->hasProperty($propertyName)) {
+                    continue; // Missing property, don't care it's handled by another event
                 }
                 foreach ($transformerConfigs as $transformerConfig) {
-                    $value = $transformerConfig->transform($value);
+                    $value = $transformerConfig->transform($event, $mapping, $value);
                 }
             }
 
-            $properties[$propertyName] = $value;
+            $event->setProperty($propertyName, $value);
         }
-
-        $event->setProperties($properties);
     }
 }

@@ -14,20 +14,15 @@ namespace Sidus\ConverterBundle\Event;
 
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
-use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Carries element around event for conversion.
  */
-class ConverterEvent extends Event
+class ConverterEvent extends AbstractEvent
 {
-    protected ?self $parentEvent = null;
-
     protected ?Mapping $parentMapping = null;
 
-    protected array $properties = [];
-
-    protected ?\ReflectionClass $outputReflectionClass = null;
+    protected \ReflectionClass $outputReflectionClass;
 
     public function __construct(
         protected mixed $input,
@@ -37,7 +32,7 @@ class ConverterEvent extends Event
     }
 
     public static function withParent(
-        self $parentEvent,
+        EventInterface $parentEvent,
         Mapping $parentMapping,
         mixed $input,
         ConverterConfiguration $configuration,
@@ -50,9 +45,9 @@ class ConverterEvent extends Event
         return $event;
     }
 
-    public function getInput(): mixed
+    public function getConfiguration(): ConverterConfiguration
     {
-        return $this->input;
+        return $this->configuration;
     }
 
     public function getOutput(): mixed
@@ -65,48 +60,18 @@ class ConverterEvent extends Event
         $this->output = $output;
     }
 
-    public function getConfiguration(): ConverterConfiguration
+    public function getParentMapping(): ?Mapping
     {
-        return $this->configuration;
-    }
-
-    public function getProperties(): array
-    {
-        return $this->properties;
-    }
-
-    public function setProperties(array $properties): void
-    {
-        $this->properties = $properties;
-    }
-
-    public function hasProperty(string $property): bool
-    {
-        return isset($this->properties[$property]);
-    }
-
-    public function setProperty(string $property, mixed $input): void
-    {
-        $this->properties[$property] = $input;
+        return $this->parentMapping;
     }
 
     public function getOutputReflectionClass(): \ReflectionClass
     {
-        if (!$this->outputReflectionClass) {
+        if (!isset($this->outputReflectionClass)) {
             $class = $this->getConfiguration()->getOutputType();
             $this->outputReflectionClass = new \ReflectionClass($class);
         }
 
         return $this->outputReflectionClass;
-    }
-
-    public function getParentEvent(): ?ConverterEvent
-    {
-        return $this->parentEvent;
-    }
-
-    public function getParentMapping(): ?Mapping
-    {
-        return $this->parentMapping;
     }
 }

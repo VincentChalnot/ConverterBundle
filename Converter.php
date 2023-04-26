@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle;
 
+use Sidus\ConverterBundle\Event\EventInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Sidus\ConverterBundle\Event\ConverterEvent;
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
@@ -31,11 +32,11 @@ class Converter implements ConverterInterface
 
     public function convert(
         mixed $input,
-        ConverterConfiguration | string $configuration,
+        ConverterConfiguration|string $configuration,
         mixed $output = null,
     ): mixed {
         if (!$configuration instanceof ConverterConfiguration) {
-            $configuration = $this->converterConfigurationRegistry->getConfiguration($configuration);
+            $configuration = $this->converterConfigurationRegistry->getConverterConfiguration($configuration);
         }
 
         $event = new ConverterEvent($input, $configuration, $output);
@@ -45,14 +46,14 @@ class Converter implements ConverterInterface
     }
 
     public function convertWithParent(
-        ConverterEvent $parentEvent,
+        EventInterface $parentEvent,
         Mapping $parentMapping,
         mixed $input,
-        ConverterConfiguration | string $configuration,
+        ConverterConfiguration|string $configuration,
         mixed $output = null,
     ): mixed {
         if (!$configuration instanceof ConverterConfiguration) {
-            $configuration = $this->converterConfigurationRegistry->getConfiguration($configuration);
+            $configuration = $this->converterConfigurationRegistry->getConverterConfiguration($configuration);
         }
 
         $event = ConverterEvent::withParent($parentEvent, $parentMapping, $input, $configuration, $output);

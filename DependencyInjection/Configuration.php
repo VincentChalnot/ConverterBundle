@@ -51,7 +51,16 @@ class Configuration implements ConfigurationInterface
                     ->arrayPrototype()
                         ->performNoDeepMerging()
                         ->children();
-        $this->buildConverterConfiguration($nodeBuilder)
+        $nodeBuilder = $this->buildConverterConfiguration($nodeBuilder)
+                        ->end()
+                    ->end()
+                ?->end()
+                ->arrayNode('behaviors')
+                    ->useAttributeAsKey('code')
+                    ->arrayPrototype()
+                        ->performNoDeepMerging()
+                        ->children();
+        $this->buildCommonMappingConfiguration($nodeBuilder)
                         ->end()
                     ->end()
                 ?->end()
@@ -64,7 +73,7 @@ class Configuration implements ConfigurationInterface
     protected function buildConverterConfiguration(NodeBuilder $nodeBuilder): NodeBuilder
     {
         /* @formatter:off */
-        return $nodeBuilder
+        $nodeBuilder
             ->scalarNode('output_type')
                 ->isRequired()
                 ->cannotBeEmpty()
@@ -78,10 +87,23 @@ class Configuration implements ConfigurationInterface
                     ->always(TypeUtility::normalizeType(...))
                 ->end()
             ->end()
-            ?->booleanNode('ignore_all_missing')->defaultFalse()->end()
             ?->booleanNode('skip_null')->defaultFalse()->end()
             ?->booleanNode('hydrate_object')->defaultFalse()->end()
             ?->booleanNode('auto_mapping')->defaultFalse()->end()
+            ?->arrayNode('behaviors')
+                ->defaultValue([])
+                ->scalarPrototype()->end()
+            ?->end();
+        /* @formatter:on */
+
+        return $this->buildCommonMappingConfiguration($nodeBuilder);
+    }
+
+    protected function buildCommonMappingConfiguration(NodeBuilder $nodeBuilder): NodeBuilder
+    {
+        /* @formatter:off */
+        return $nodeBuilder
+            ->booleanNode('ignore_all_missing')->defaultFalse()->end()
             ?->arrayNode('accessor')
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -94,7 +116,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->arrayNode('mapping')
                 ->useAttributeAsKey('output_property')
-                ->cannotBeEmpty()
+                ->defaultValue([])
                 ->performNoDeepMerging()
                 ->arrayPrototype()
                     ->children()

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle\DependencyInjection;
 
-use Sidus\ConverterBundle\Registry\ConverterConfigurationRegistry;
+use Sidus\ConverterBundle\Configuration\ConfigurationBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -31,7 +31,8 @@ class SidusConverterExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $registry = $container->getDefinition(ConverterConfigurationRegistry::class);
-        $registry->setArgument('$arrayConfigurations', $config['configurations']);
+        $registry = $container->getDefinition(ConfigurationBuilder::class);
+        $registry->setArgument('$converterConfigurations', $config['configurations']);
+        $registry->setArgument('$behaviorConfigurations', $config['behaviors']);
     }
 }

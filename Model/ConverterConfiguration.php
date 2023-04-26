@@ -12,24 +12,27 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle\Model;
 
+use Sidus\ConverterBundle\Model\Behavior\BehaviorConfigurationCollection;
 use Sidus\ConverterBundle\Model\Mapping\MappingCollection;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Configures how the normalizer should handle data.
  */
-class ConverterConfiguration
+class ConverterConfiguration extends AbstractConfiguration
 {
     public function __construct(
         protected string $outputType,
-        protected MappingCollection $mapping,
-        protected PropertyAccessorInterface $accessor,
+        MappingCollection $mapping,
+        protected BehaviorConfigurationCollection $behaviors,
+        PropertyAccessorInterface $accessor,
         protected bool $skipNull = false,
-        protected bool $ignoreAllMissing = false,
+        bool $ignoreAllMissing = false,
         protected bool $hydrateObject = false,
         protected bool $autoMapping = false,
         protected ?string $inputType = null,
     ) {
+        parent::__construct($mapping, $accessor, $ignoreAllMissing);
     }
 
     public function getOutputType(): string
@@ -37,24 +40,14 @@ class ConverterConfiguration
         return $this->outputType;
     }
 
-    public function getMapping(): MappingCollection
+    public function getBehaviors(): BehaviorConfigurationCollection
     {
-        return $this->mapping;
-    }
-
-    public function getAccessor(): PropertyAccessorInterface
-    {
-        return $this->accessor;
+        return $this->behaviors;
     }
 
     public function isSkipNull(): bool
     {
         return $this->skipNull;
-    }
-
-    public function isIgnoreAllMissing(): bool
-    {
-        return $this->ignoreAllMissing;
     }
 
     public function isHydrateObject(): bool

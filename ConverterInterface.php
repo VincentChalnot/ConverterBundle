@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle;
 
-use Sidus\ConverterBundle\Event\ConverterEvent;
+use Sidus\ConverterBundle\Event\EventInterface;
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
 
@@ -28,7 +28,7 @@ interface ConverterInterface
     ): mixed;
 
     public function convertWithParent(
-        ConverterEvent $parentEvent,
+        EventInterface $parentEvent,
         Mapping $parentMapping,
         mixed $input,
         ConverterConfiguration | string $configuration,

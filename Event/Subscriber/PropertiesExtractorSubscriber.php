@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle\Event\Subscriber;
 
+use Sidus\ConverterBundle\Event\BehaviorEvent;
 use Sidus\ConverterBundle\Event\ConverterEvent;
+use Sidus\ConverterBundle\Event\EventInterface;
 use Sidus\ConverterBundle\Helper\MappingExtractorHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -22,7 +24,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class PropertiesExtractorSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly MappingExtractorHelper $mappingExtractorHelper,
+        protected readonly MappingExtractorHelper $mappingExtractorHelper,
     ) {
     }
 
@@ -30,15 +32,15 @@ class PropertiesExtractorSubscriber implements EventSubscriberInterface
     {
         return [
             ConverterEvent::class => ['convert', 1000],
+            BehaviorEvent::class => ['convert', 1000],
         ];
     }
 
-    public function convert(ConverterEvent $event): void
+    public function convert(EventInterface $event): void
     {
         $config = $event->getConfiguration();
-        $input = $event->getInput();
         foreach ($config->getMapping() as $mapping) {
-            $this->mappingExtractorHelper->applyMapping($event, $config, $mapping, $input);
+            $this->mappingExtractorHelper->applyMapping($event, $config, $mapping);
         }
     }
 }

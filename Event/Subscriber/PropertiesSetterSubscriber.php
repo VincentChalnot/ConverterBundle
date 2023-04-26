@@ -16,9 +16,9 @@ use Sidus\ConverterBundle\Event\ConverterEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Handles basic conversion.
+ * Sets all remaining properties on the output object.
  */
-class BaseConverterSubscriber implements EventSubscriberInterface
+class PropertiesSetterSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -32,13 +32,11 @@ class BaseConverterSubscriber implements EventSubscriberInterface
         $config = $event->getConfiguration();
         $output = $event->getOutput();
 
-        $properties = $event->getProperties();
-        foreach ($properties as $propertyName => $value) {
+        foreach ($event->getProperties() as $propertyName => $value) {
             $config->getAccessor()->setValue($output, $propertyName, $value);
-            unset($properties[$propertyName]);
+            $event->removeProperty($propertyName);
         }
 
-        $event->setProperties($properties);
         $event->setOutput($output);
     }
 }

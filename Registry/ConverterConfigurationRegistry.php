@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Sidus\ConverterBundle\Registry;
 
 use Sidus\ConverterBundle\Configuration\ConfigurationBuilder;
+use Sidus\ConverterBundle\Model\Behavior\BehaviorConfiguration;
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
 
 /**
@@ -21,31 +22,53 @@ use Sidus\ConverterBundle\Model\ConverterConfiguration;
 class ConverterConfigurationRegistry
 {
     /** @var ConverterConfiguration[] */
-    protected array $resolvedConfigurations = [];
+    protected array $converterConfigurations = [];
+
+    /** @var BehaviorConfiguration[] */
+    protected array $behaviorConfigurations = [];
 
     public function __construct(
-        protected array $arrayConfigurations,
         protected ConfigurationBuilder $configurationBuilder,
     ) {
     }
 
-    public function getConfiguration(string $code): ConverterConfiguration
+    public function getConverterConfiguration(string $code): ConverterConfiguration
     {
-        if (!$this->hasConfiguration($code)) {
-            throw new \RuntimeException("Missing converter configuration {$code}");
-        }
-        if (!array_key_exists($code, $this->resolvedConfigurations)) {
-            $this->resolvedConfigurations[$code] = $this->configurationBuilder->resolveConverterConfiguration(
-                $this->arrayConfigurations[$code]
-            );
+        if (!array_key_exists($code, $this->converterConfigurations)) {
+            $this->converterConfigurations[$code] = $this->configurationBuilder->getConverterConfiguration($code);
         }
 
-        return $this->resolvedConfigurations[$code];
+        return $this->converterConfigurations[$code];
     }
 
-    public function hasConfiguration(string $code): bool
+    public function hasConverterConfiguration(string $code): bool
     {
-        return array_key_exists($code, $this->resolvedConfigurations)
-            || array_key_exists($code, $this->arrayConfigurations);
+        return array_key_exists($code, $this->converterConfigurations)
+            || $this->configurationBuilder->hasConverterConfiguration($code);
+    }
+
+    public function addConverterConfiguration(string $code, ConverterConfiguration $converterConfiguration): void
+    {
+        $this->converterConfigurations[$code] = $converterConfiguration;
+    }
+
+    public function getBehaviorConfiguration(string $code): BehaviorConfiguration
+    {
+        if (!array_key_exists($code, $this->behaviorConfigurations)) {
+            $this->behaviorConfigurations[$code] = $this->configurationBuilder->getBehaviorConfiguration($code);
+        }
+
+        return $this->behaviorConfigurations[$code];
+    }
+
+    public function hasBehaviorConfiguration(string $code): bool
+    {
+        return array_key_exists($code, $this->behaviorConfigurations)
+            || $this->configurationBuilder->hasBehaviorConfiguration($code);
+    }
+
+    public function addBehaviorConfiguration(string $code, BehaviorConfiguration $behaviorConfiguration): void
+    {
+        $this->behaviorConfigurations[$code] = $behaviorConfiguration;
     }
 }
