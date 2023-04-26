@@ -31,9 +31,13 @@ class PropertiesSetterSubscriber implements EventSubscriberInterface
     {
         $config = $event->getConfiguration();
         $output = $event->getOutput();
+        $accessor = $config->getAccessor();
 
         foreach ($event->getProperties() as $propertyName => $value) {
-            $config->getAccessor()->setValue($output, $propertyName, $value);
+            if (!$accessor->isWritable($output, $propertyName)) {
+                throw new \UnexpectedValueException("Property {$propertyName} is not writable");
+            }
+            $accessor->setValue($output, $propertyName, $value);
             $event->removeProperty($propertyName);
         }
 

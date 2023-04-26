@@ -38,14 +38,19 @@ class CheckInputTypeSubscriber implements EventSubscriberInterface
 
             return;
         }
+        if ($event->getInput() instanceof $inputType) {
+            return;
+        }
         $type = gettype($event->getInput());
         if ($type === $inputType) {
             return;
         }
-        if (!$event->getInput() instanceof $inputType) {
-            throw new \RuntimeException(
-                message: "Incorrect input type, expecting '{$inputType}', got '{$type}' instead",
-            );
+
+        if ('object' === $type) {
+            $type = get_class($event->getInput());
         }
+        throw new \RuntimeException(
+            message: "Incorrect input type, expecting '{$inputType}', got '{$type}' instead",
+        );
     }
 }

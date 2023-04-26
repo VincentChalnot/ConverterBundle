@@ -42,7 +42,7 @@ abstract class AbstractEvent extends Event implements EventInterface
 
     public function hasProperty(string $property): bool
     {
-        return isset($this->properties[$property]);
+        return array_key_exists($property, $this->properties);
     }
 
     public function getProperty(string $property): mixed
