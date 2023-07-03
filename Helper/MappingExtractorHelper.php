@@ -27,6 +27,9 @@ class MappingExtractorHelper
         if (null === $inputProperty) {
             $inputProperty = $outputProperty;
         }
+        if ($mapping->isIgnored()) {
+            return;
+        }
         if ('.' === $inputProperty) {
             $event->setProperty($outputProperty, $input);
 

@@ -50,7 +50,7 @@ class ConverterTransformer implements ConfigurableTransformerInterface
                 // Validates and normalize configuration
                 $value = $this->converterConfiguration->buildNestedConfiguration($value);
 
-                return $this->configurationBuilder->resolveConverterConfiguration($value);
+                return $this->configurationBuilder->resolveConverterConfiguration(uniqid('internal_'), $value);
             }
         );
     }

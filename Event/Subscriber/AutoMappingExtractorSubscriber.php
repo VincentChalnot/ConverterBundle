@@ -40,7 +40,16 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
         if (!$config->isAutoMapping()) {
             return;
         }
+        if ('array' === $config->getOutputType()) {
+            $this->convertArray($event);
+        } else {
+            $this->convertObject($event);
+        }
+    }
 
+    private function convertObject(ConverterEvent $event): void
+    {
+        $config = $event->getConfiguration();
         $outputRefl = $event->getOutputReflectionClass();
         foreach ($outputRefl->getProperties() as $property) {
             if ($event->hasProperty($property->getName())) {
@@ -48,6 +57,23 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
             }
             $mapping = new Mapping(
                 outputProperty: $property->getName(),
+                ignoreMissing: true,
+            );
+            $this->mappingExtractorHelper->applyMapping($event, $config, $mapping);
+        }
+    }
+
+    private function convertArray(ConverterEvent $event): void
+    {
+        $config = $event->getConfiguration();
+        $inputRefl = $event->getInputReflectionClass();
+        foreach ($inputRefl->getProperties() as $property) {
+            $key = "[{$property->getName()}]";
+            if ($event->hasProperty($key)) {
+                continue;
+            }
+            $mapping = new Mapping(
+                outputProperty: $key,
                 ignoreMissing: true,
             );
             $this->mappingExtractorHelper->applyMapping($event, $config, $mapping);

@@ -21,10 +21,28 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class AbstractConfiguration implements ConfigurationInterface
 {
     public function __construct(
+        protected string $code,
+        protected string $inputType,
+        protected string $outputType,
         protected MappingCollection $mapping,
         protected PropertyAccessorInterface $accessor,
         protected bool $ignoreAllMissing = false,
     ) {
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function getInputType(): string
+    {
+        return $this->inputType;
+    }
+
+    public function getOutputType(): string
+    {
+        return $this->outputType;
     }
 
     public function getMapping(): MappingCollection

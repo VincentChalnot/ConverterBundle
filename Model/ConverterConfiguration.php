@@ -22,7 +22,9 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class ConverterConfiguration extends AbstractConfiguration
 {
     public function __construct(
-        protected string $outputType,
+        string $code,
+        string $inputType,
+        string $outputType,
         MappingCollection $mapping,
         protected BehaviorConfigurationCollection $behaviors,
         PropertyAccessorInterface $accessor,
@@ -30,14 +32,15 @@ class ConverterConfiguration extends AbstractConfiguration
         bool $ignoreAllMissing = false,
         protected bool $hydrateObject = false,
         protected bool $autoMapping = false,
-        protected ?string $inputType = null,
     ) {
-        parent::__construct($mapping, $accessor, $ignoreAllMissing);
-    }
-
-    public function getOutputType(): string
-    {
-        return $this->outputType;
+        parent::__construct(
+            code: $code,
+            inputType: $inputType,
+            outputType: $outputType,
+            mapping: $mapping,
+            accessor: $accessor,
+            ignoreAllMissing: $ignoreAllMissing,
+        );
     }
 
     public function getBehaviors(): BehaviorConfigurationCollection
@@ -58,10 +61,5 @@ class ConverterConfiguration extends AbstractConfiguration
     public function isAutoMapping(): bool
     {
         return $this->autoMapping;
-    }
-
-    public function getInputType(): ?string
-    {
-        return $this->inputType;
     }
 }

@@ -22,6 +22,7 @@ class Mapping
         protected ?string $inputProperty = null,
         protected ?TransformerConfigurationCollection $transformerConfigurations = null,
         protected ?bool $ignoreMissing = null,
+        protected bool $ignored = false,
     ) {
     }
 
@@ -43,5 +44,10 @@ class Mapping
     public function isIgnoreMissing(): ?bool
     {
         return $this->ignoreMissing;
+    }
+
+    public function isIgnored(): bool
+    {
+        return $this->ignored;
     }
 }

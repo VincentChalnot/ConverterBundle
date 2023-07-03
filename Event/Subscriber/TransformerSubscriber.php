@@ -41,6 +41,9 @@ class TransformerSubscriber implements EventSubscriberInterface
         $config = $event->getConfiguration();
 
         foreach ($config->getMapping() as $mapping) {
+            if ($mapping->isIgnored()) {
+                continue;
+            }
             $propertyName = $mapping->getOutputProperty();
             $value = $event->getProperty($propertyName);
 

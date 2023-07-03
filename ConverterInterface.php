@@ -23,7 +23,7 @@ interface ConverterInterface
 {
     public function convert(
         mixed $input,
-        ConverterConfiguration | string $configuration,
+        ConverterConfiguration|string $configuration,
         mixed $output = null,
     ): mixed;
 
@@ -31,7 +31,7 @@ interface ConverterInterface
         EventInterface $parentEvent,
         Mapping $parentMapping,
         mixed $input,
-        ConverterConfiguration | string $configuration,
+        ConverterConfiguration|string $configuration,
         mixed $output = null,
     ): mixed;
 }

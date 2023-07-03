@@ -46,7 +46,7 @@ class ConfigurationBuilder
             throw new \RuntimeException("Missing converter configuration {$code}");
         }
 
-        return $this->resolveConverterConfiguration($this->converterConfigurations[$code]);
+        return $this->resolveConverterConfiguration($code, $this->converterConfigurations[$code]);
     }
 
     public function hasBehaviorConfiguration(string $code): bool
@@ -60,12 +60,14 @@ class ConfigurationBuilder
             throw new \RuntimeException("Missing behavior configuration {$code}");
         }
 
-        return $this->resolveBehaviorConfiguration($this->behaviorConfigurations[$code]);
+        return $this->resolveBehaviorConfiguration($code, $this->behaviorConfigurations[$code]);
     }
 
-    public function resolveConverterConfiguration(array $config): ConverterConfiguration
+    public function resolveConverterConfiguration(string $code, array $config): ConverterConfiguration
     {
         return new ConverterConfiguration(
+            code: $code,
+            inputType: $config['input_type'],
             outputType: $config['output_type'],
             mapping: $this->getMappingCollection($config['mapping']),
             behaviors: $this->getBehaviorConfigurationCollection($config['behaviors']),
@@ -74,7 +76,6 @@ class ConfigurationBuilder
             ignoreAllMissing: $config['ignore_all_missing'],
             hydrateObject: $config['hydrate_object'],
             autoMapping: $config['auto_mapping'],
-            inputType: $config['input_type'],
         );
     }
 
@@ -88,9 +89,12 @@ class ConfigurationBuilder
         );
     }
 
-    protected function resolveBehaviorConfiguration(array $config): BehaviorConfiguration
+    protected function resolveBehaviorConfiguration(string $code, array $config): BehaviorConfiguration
     {
         return new BehaviorConfiguration(
+            code: $code,
+            inputType: $config['input_type'],
+            outputType: $config['output_type'],
             mapping: $this->getMappingCollection($config['mapping']),
             accessor: $this->getPropertyAccessor($config['accessor']),
             ignoreAllMissing: $config['ignore_all_missing'],
@@ -138,6 +142,7 @@ class ConfigurationBuilder
                 inputProperty: $mappingConfig['input_property'],
                 transformerConfigurations: $this->getTransformers($mappingConfig['transformers']),
                 ignoreMissing: $mappingConfig['ignore_missing'],
+                ignored: $mappingConfig['ignored'],
             );
         }
 

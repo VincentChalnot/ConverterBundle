@@ -22,6 +22,8 @@ class ConverterEvent extends AbstractEvent
 {
     protected ?Mapping $parentMapping = null;
 
+    protected \ReflectionClass $inputReflectionClass;
+
     protected \ReflectionClass $outputReflectionClass;
 
     public function __construct(
@@ -73,5 +75,15 @@ class ConverterEvent extends AbstractEvent
         }
 
         return $this->outputReflectionClass;
+    }
+
+    public function getInputReflectionClass(): \ReflectionClass
+    {
+        if (!isset($this->inputReflectionClass)) {
+            $class = $this->getConfiguration()->getInputType();
+            $this->inputReflectionClass = new \ReflectionClass($class);
+        }
+
+        return $this->inputReflectionClass;
     }
 }
