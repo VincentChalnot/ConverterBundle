@@ -41,42 +41,33 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
             return;
         }
         if ('array' === $config->getOutputType()) {
-            $this->convertArray($event);
+            $refl = $event->getInputReflectionClass();
         } else {
-            $this->convertObject($event);
+            $refl = $event->getOutputReflectionClass();
         }
-    }
 
-    private function convertObject(ConverterEvent $event): void
-    {
         $config = $event->getConfiguration();
-        $outputRefl = $event->getOutputReflectionClass();
-        foreach ($outputRefl->getProperties() as $property) {
+        foreach ($refl->getProperties() as $property) {
+            $outputProperty = $this->getProperty($property, $config->getOutputType());
             if ($event->hasProperty($property->getName())) {
                 continue;
             }
+            $inputProperty = $this->getProperty($property, $config->getInputType());
             $mapping = new Mapping(
-                outputProperty: $property->getName(),
+                outputProperty: $outputProperty,
+                inputProperty: $inputProperty,
                 ignoreMissing: true,
             );
             $this->mappingExtractorHelper->applyMapping($event, $config, $mapping);
         }
     }
 
-    private function convertArray(ConverterEvent $event): void
+    private function getProperty(\ReflectionProperty $property, string $type): string
     {
-        $config = $event->getConfiguration();
-        $inputRefl = $event->getInputReflectionClass();
-        foreach ($inputRefl->getProperties() as $property) {
-            $key = "[{$property->getName()}]";
-            if ($event->hasProperty($key)) {
-                continue;
-            }
-            $mapping = new Mapping(
-                outputProperty: $key,
-                ignoreMissing: true,
-            );
-            $this->mappingExtractorHelper->applyMapping($event, $config, $mapping);
+        if ('array' === $type) {
+            return "[{$property->getName()}]";
         }
+
+        return $property->getName();
     }
 }
