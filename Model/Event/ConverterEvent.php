@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Sidus\ConverterBundle\Event;
+namespace Sidus\ConverterBundle\Model\Event;
 
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;

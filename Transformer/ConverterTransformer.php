@@ -16,7 +16,7 @@ use CleverAge\ProcessBundle\Transformer\ConfigurableTransformerInterface;
 use Sidus\ConverterBundle\Configuration\ConfigurationBuilder;
 use Sidus\ConverterBundle\ConverterInterface;
 use Sidus\ConverterBundle\DependencyInjection\Configuration;
-use Sidus\ConverterBundle\Event\EventInterface;
+use Sidus\ConverterBundle\Model\Event\EventInterface;
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
 use Symfony\Component\OptionsResolver\Options;

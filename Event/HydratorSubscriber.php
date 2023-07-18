@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Sidus\ConverterBundle\Event\Subscriber;
+namespace Sidus\ConverterBundle\Event;
 
 use Psr\Log\LoggerInterface;
-use Sidus\ConverterBundle\Event\ConverterEvent;
+use Sidus\ConverterBundle\Model\Event\ConverterEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

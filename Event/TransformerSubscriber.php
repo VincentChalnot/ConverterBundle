@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Sidus\ConverterBundle\Event\Subscriber;
+namespace Sidus\ConverterBundle\Event;
 
 use Sidus\ConverterBundle\ConverterInterface;
-use Sidus\ConverterBundle\Event\BehaviorEvent;
-use Sidus\ConverterBundle\Event\ConverterEvent;
-use Sidus\ConverterBundle\Event\EventInterface;
+use Sidus\ConverterBundle\Model\Event\BehaviorEvent;
+use Sidus\ConverterBundle\Model\Event\ConverterEvent;
+use Sidus\ConverterBundle\Model\Event\EventInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

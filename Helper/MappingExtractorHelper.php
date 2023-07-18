@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle\Helper;
 
-use Sidus\ConverterBundle\Event\EventInterface;
+use Sidus\ConverterBundle\Model\Event\EventInterface;
 use Sidus\ConverterBundle\Model\ConfigurationInterface;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
 use Symfony\Component\PropertyAccess\Exception\AccessException;

@@ -14,7 +14,7 @@ namespace Sidus\ConverterBundle\Model\Mapping;
 
 use CleverAge\ProcessBundle\Transformer\ConfigurableTransformerInterface;
 use CleverAge\ProcessBundle\Transformer\TransformerInterface;
-use Sidus\ConverterBundle\Event\EventInterface;
+use Sidus\ConverterBundle\Model\Event\EventInterface;
 use Sidus\ConverterBundle\Transformer\ConverterTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
