@@ -49,7 +49,7 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
         $config = $event->getConfiguration();
         foreach ($refl->getProperties() as $property) {
             $outputProperty = $this->getProperty($property, $config->getOutputType());
-            if ($event->hasProperty($property->getName())) {
+            if ($event->hasProperty($outputProperty)) {
                 continue;
             }
             $inputProperty = $this->getProperty($property, $config->getInputType());

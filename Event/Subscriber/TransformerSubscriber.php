@@ -45,6 +45,9 @@ class TransformerSubscriber implements EventSubscriberInterface
                 continue;
             }
             $propertyName = $mapping->getOutputProperty();
+            if ($mapping->isIgnoreMissing() && !$event->hasProperty($propertyName)) {
+                continue;
+            }
             $value = $event->getProperty($propertyName);
 
             // First, transformers

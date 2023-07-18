@@ -13,8 +13,6 @@ interface EventInterface
 
     public function getProperties(): array;
 
-    public function setProperties(array $properties): void;
-
     public function hasProperty(string $property): bool;
 
     public function getProperty(string $property): mixed;
