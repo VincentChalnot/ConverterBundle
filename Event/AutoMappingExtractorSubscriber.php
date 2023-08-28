@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Sidus\ConverterBundle\Event;
 
+use Sidus\ConverterBundle\Model\ConverterConfiguration;
 use Sidus\ConverterBundle\Model\Event\ConverterEvent;
 use Sidus\ConverterBundle\Helper\MappingExtractorHelper;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
@@ -40,19 +41,13 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
         if (!$config->isAutoMapping()) {
             return;
         }
-        if ('array' === $config->getOutputType()) {
-            $refl = $event->getInputReflectionClass();
-        } else {
-            $refl = $event->getOutputReflectionClass();
-        }
 
-        $config = $event->getConfiguration();
-        foreach ($refl->getProperties() as $property) {
-            $outputProperty = $this->getProperty($property, $config->getOutputType());
+        foreach ($this->getProperties($event, $config) as $propertyName) {
+            $outputProperty = $this->getProperty($propertyName, $config->getOutputType());
             if ($event->hasProperty($outputProperty)) {
                 continue;
             }
-            $inputProperty = $this->getProperty($property, $config->getInputType());
+            $inputProperty = $this->getProperty($propertyName, $config->getInputType());
             $mapping = new Mapping(
                 outputProperty: $outputProperty,
                 inputProperty: $inputProperty,
@@ -62,12 +57,33 @@ class AutoMappingExtractorSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function getProperty(\ReflectionProperty $property, string $type): string
+    private function getProperty(string $propertyName, string $type): string
     {
         if ('array' === $type) {
-            return "[{$property->getName()}]";
+            return "[{$propertyName}]";
         }
 
-        return $property->getName();
+        return $propertyName;
+    }
+
+    private function getProperties(ConverterEvent $event, ConverterConfiguration $config): \Generator
+    {
+        if ('array' === $config->getOutputType()) {
+            if ('array' === $config->getInputType()) {
+                // Both input and output are arrays, just passthrough
+                foreach ($event->getInput() as $key => $input) {
+                    yield $key;
+                }
+
+                return;
+            }
+            $refl = $event->getInputReflectionClass();
+        } else {
+            $refl = $event->getOutputReflectionClass();
+        }
+
+        foreach ($refl->getProperties() as $property) {
+            yield $property->getName();
+        }
     }
 }

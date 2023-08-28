@@ -1,0 +1,55 @@
+sidus_converter:
+    configurations:
+        example_converter_1: # This is a placeholder for the converter code
+            # Boolean value to determine if null values should be skipped
+            skip_null: false # Default value
+            # Tell the system to hydrate the object without calling the constructor
+            hydrate_object: false # Default value
+            # Automatic mapping will map all properties that have the same name
+            # If the output type is "array", then all object's properties or array's key: values will be passed
+            auto_mapping: false # Default value
+            # Type of the output, php type or class/interface name
+            output_type: 'example_output_type' # This is a required field
+            # Type of the input, php type or class/interface name
+            input_type: 'example_input_type' # This is a required field
+            # Missing properties are throwing exceptions by default
+            ignore_all_missing: false # Default value
+             # Custom Symfony property accessor configuration
+            accessor:
+                exception_on_invalid_index: true # Default value
+                exception_on_invalid_property_path: true # Default value
+                enable_magic_call: false # Default value
+                enable_magic_get: true # Default value
+                enable_magic_set: true # Default value
+            # The most important key, this is where you define the mapping between input and output
+            mapping:
+                # Each key corresponds to a target property of the output type
+                output_property_name_1: # This is a placeholder for the output property path
+                    # property_path of the input property, same as the output property name by default
+                    input_property: 'example_input_property'
+                    # Boolean value to determine if missing values should be ignored
+                    ignore_missing: false # Default value
+                    # This tells the system to ignore the property entirely, only useful for auto-mapping
+                    ignored: false # Default value
+                    # Transformers applied to the property, all transformers are chained
+                    transformers:
+                        - example_transformer_1:
+                              # Transformer options are specific to each transformer
+                              key: value
+                        - example_transformer_2: ~
+            behaviors:
+                # List of behaviors that must be applied to this conversion, see below for more details
+                - example_behavior_1
+                - example_behavior_2
+
+    # Behaviors are like configurations, but they are reusable and can be applied to multiple configurations, like a PHP
+    # trait
+    behaviors:
+        example_behavior_1:  # This is a placeholder for the behavior code
+            ...: # Same as the configuration above but without the following options:
+            # behaviors
+            # skipNull
+            # ignoreAllMissing
+            # hydrateObject
+            # autoMapping
+
