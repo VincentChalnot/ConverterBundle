@@ -16,6 +16,8 @@ use CleverAge\ProcessBundle\Registry\TransformerRegistry;
 use Sidus\ConverterBundle\Model\Behavior\BehaviorConfiguration;
 use Sidus\ConverterBundle\Model\Behavior\BehaviorConfigurationCollection;
 use Sidus\ConverterBundle\Model\ConverterConfiguration;
+use Sidus\ConverterBundle\Model\Exception\MissingBehaviorException;
+use Sidus\ConverterBundle\Model\Exception\MissingConverterException;
 use Sidus\ConverterBundle\Model\Mapping\Mapping;
 use Sidus\ConverterBundle\Model\Mapping\MappingCollection;
 use Sidus\ConverterBundle\Model\Mapping\TransformerConfiguration;
@@ -43,7 +45,7 @@ class ConfigurationBuilder
     public function getConverterConfiguration(string $code): ConverterConfiguration
     {
         if (!$this->hasConverterConfiguration($code)) {
-            throw new \RuntimeException("Missing converter configuration {$code}");
+            throw new MissingConverterException("Missing converter configuration {$code}");
         }
 
         return $this->resolveConverterConfiguration($code, $this->converterConfigurations[$code]);
@@ -57,7 +59,7 @@ class ConfigurationBuilder
     public function getBehaviorConfiguration(string $code): BehaviorConfiguration
     {
         if (!$this->hasBehaviorConfiguration($code)) {
-            throw new \RuntimeException("Missing behavior configuration {$code}");
+            throw new MissingBehaviorException("Missing behavior configuration {$code}");
         }
 
         return $this->resolveBehaviorConfiguration($code, $this->behaviorConfigurations[$code]);
