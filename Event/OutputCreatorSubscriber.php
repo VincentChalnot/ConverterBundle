@@ -23,7 +23,7 @@ class OutputCreatorSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ConverterEvent::class => ['convert', 100],
+            ConverterEvent::class => ['convert', 400],
         ];
     }
 
@@ -41,10 +41,17 @@ class OutputCreatorSubscriber implements EventSubscriberInterface
         }
 
         if (!class_exists($config->getOutputType())) {
-            throw new \UnexpectedValueException("Unable to create element of type {$config->getOutputType()}");
+            throw new \UnexpectedValueException("Unable to create object of class {$config->getOutputType()}");
         }
 
         $refl = $event->getOutputReflectionClass();
+
+        if ($config->isHydrateObject()) {
+            // When hydrating the output object, we don't want to call the constructor
+            $event->setOutput($refl->newInstanceWithoutConstructor());
+
+            return;
+        }
 
         $args = [];
         if ($refl->hasMethod('__construct')) {

@@ -31,8 +31,8 @@ class TransformerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ConverterEvent::class => ['convert', 900],
-            BehaviorEvent::class => ['convert', 900],
+            ConverterEvent::class => ['convert', 800],
+            BehaviorEvent::class => ['convert', 800],
         ];
     }
 
